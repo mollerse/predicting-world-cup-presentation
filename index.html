@@ -1,0 +1,677 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <link
+      href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAYAAABPYyMiAAAABmJLR0T///////8JWPfcAAAACXBIWXMAAABIAAAASABGyWs+AAAAF0lEQVRIx2NgGAWjYBSMglEwCkbBSAcACBAAAeaR9cIAAAAASUVORK5CYII="
+      rel="icon"
+      type="image/x-icon"
+    />
+    <title>Kan du spå VM i fotball?</title>
+
+    <style>
+      @import url("/node_modules/reveal.js/dist/reveal.css");
+      @import url("/node_modules/reveal.js/dist/theme/night.css");
+      /* Highlight.js styling */
+      @import url("/lib/darcula.css");
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        width: 100vw !important;
+        height: calc((9 / 16) * 100vw) !important;
+      }
+
+      /* Landscape */
+      @media (min-aspect-ratio: 16/9) {
+        body {
+          height: 100vh !important;
+          width: calc((16 / 9) * 100vh) !important;
+        }
+      }
+
+      /* Reveal.js styles */
+      :root {
+        --background-color: #050505;
+        --main-color: #ebebeb;
+        --accent-color: hotpink;
+        --main-font: "DejaVu Sans", Helvetica, sans-serif;
+        --font-weight: 300;
+        --font-size: calc(var(--scale, 1) * 3em);
+        --r-main-font-size: var(--font-size);
+        --r-background-color: var(--background-color);
+        --r-main-font: var(--main-font);
+        --r-main-color: var(--main-color);
+        --r-heading-font: var(--main-font);
+        --r-heading-color: var(--main-color);
+        --r-heading-font-weight: var(--font-weight);
+        --r-link-color: var(--accent-color);
+        --r-link-color-hover: var(--accent-color);
+        --r-heading-text-transform: uppercase;
+      }
+
+      p {
+        font-weight: var(--font-weight);
+        margin: 0 0 1em !important;
+      }
+
+      p:last-child {
+        margin-bottom: 0 !important;
+      }
+
+      /* Other styles */
+
+      .slides > section {
+        height: 100%;
+        width: 100%;
+        padding: 2.5%;
+      }
+
+      .center {
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .center p {
+        line-height: 1.5;
+      }
+
+      .center .small {
+        font-size: 50%;
+      }
+
+      .center h1 {
+        margin-bottom: 0;
+      }
+
+      .center .stand-alone {
+        width: 75%;
+        font-size: 125%;
+        margin: 0 auto;
+      }
+
+      .center .subtitle {
+        margin-bottom: 20px;
+      }
+
+      .full,
+      .full * {
+        width: 100%;
+        max-width: 100% !important;
+        max-height: 100% !important;
+      }
+
+      .full * {
+        margin: 0 !important;
+      }
+
+      .standard {
+        flex-direction: column;
+        justify-content: left;
+        text-align: left;
+      }
+
+      .standard h2 {
+        margin-bottom: 1em;
+      }
+
+      .standard > div {
+        flex-grow: 1;
+        padding: 2.5%;
+        padding-top: 0;
+      }
+
+      .standard p {
+        max-width: 80%;
+      }
+
+      .standard sup {
+        font-size: 50%;
+      }
+
+      .standard p.small {
+        font-size: 50%;
+      }
+
+      .standard p.smaller {
+        font-size: 35%;
+      }
+
+      .standard ul {
+        font-weight: var(--font-weight);
+      }
+
+      .center p.stand-alone {
+        max-width: 60%;
+      }
+
+      .standard pre {
+        width: 100% !important;
+      }
+
+      .standard p:has(+ pre) {
+        position: absolute;
+        font-family: var(--r-code-font);
+        right: 5.5%;
+        margin: 0;
+        z-index: 1;
+      }
+
+      .standard p + pre {
+        margin-top: 0;
+      }
+
+      .standard pre code {
+        max-height: none;
+      }
+
+      .standard .no-margin-bottom {
+        margin-bottom: 0 !important;
+      }
+
+      .standard .no-margin {
+        margin-bottom: 0 !important;
+        margin-top: 0 !important;
+      }
+
+      .standard img.center {
+        margin: 0 auto;
+        display: block;
+        width: min(350px, 25vw);
+      }
+
+      .center blockquote {
+        background: none;
+        box-shadow: none;
+        text-align: left;
+      }
+
+      .center blockquote + p {
+        width: 70%;
+        text-align: left;
+        margin-left: auto !important;
+        margin-right: auto !important;
+      }
+
+      img {
+        object-fit: contain;
+      }
+
+      .center img {
+        margin: auto !important;
+      }
+
+      .gallery {
+        display: flex;
+        flex-direction: row;
+        align-items: space-between;
+        justify-content: center;
+      }
+
+      .standard table {
+        font-size: 0.5em;
+        height: 100%;
+        width: 100%;
+      }
+
+      .standard td {
+        max-width: 10ch;
+      }
+
+      .demo {
+        align-items: center;
+        justify-content: center;
+      }
+
+      .demo canvas-slide {
+        display: block;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+      }
+
+      .demo canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+      }
+
+      .tp-dfwv {
+        z-index: 1 !important;
+        display: none;
+      }
+
+      body.demo .tp-dfwv {
+        display: block;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section class="center">
+          <h1>Kan du spå VM i fotball?</h1>
+          <p class="small">Stian Veum Møllersen / @mollerse</p>
+          <p class="small">på</p>
+          <p class="small">&num;HelloStavanger</p>
+        </section>
+        <section class="center">
+          <img width="600px" src="assets/poisson.svg" alt="" />
+        </section>
+        <section class="standard">
+          <h2>Hei!</h2>
+          <p>Jeg er Stian.</p>
+          <p class="fragment">Jeg jobber i Visuelle Historier i NRK.</p>
+          <p class="fragment">
+            Tilfeldighetsgjeting, algoritmer, tallknusing, visuelle ablegøyer, og utviklerpotet.
+          </p>
+        </section>
+        <section class="standard">
+          <img
+            src="assets/2025.png"
+            alt="Stian og Vilde på HelloStavanger i 2025 som snakker om Visuelle Historier i NRK."
+          />
+        </section>
+        <section class="standard">
+          <h2>Visuelle Historier</h2>
+          <p>Blandt de mange tingene vi jobber med er store felleshendelser.</p>
+          <p class="fragment">Som f.eks. store sportshendelser.</p>
+        </section>
+        <section class="center">
+          <h2>VM i fotball</h2>
+        </section>
+        <section class="standard">
+          <h2>VM og NRK</h2>
+          <p>Tidlig på året ble VM definert som «Årets store fellesopplevelse».</p>
+          <p class="fragment">
+            Målet er å nå de som følger med på VM fordi Norge faktisk er med denne gangen.
+          </p>
+        </section>
+        <section class="center">
+          <p>Hvordan engasjere normenn både før og under VM?</p>
+          <p class="fragment small">
+            Og spesielt de som ikke allerede er alt for opptatt av fotball.
+          </p>
+        </section>
+        <section class="full">
+          <img
+            src="assets/stale-gress.png"
+            alt="Ståle Solbakken som starter gressklipperen med teksten «Direkte nå»"
+          />
+        </section>
+        <section class="center">
+          <h2>Før VM: «Er vi i form?»</h2>
+        </section>
+        <section class="standard">
+          <h2>Før VM</h2>
+          <p class="small" style="margin: 0 auto">
+            <a href="https://www.nrk.no/spesial/folg-landslagets-form-1.17813317">NRKs Formkurve</a>
+          </p>
+          <img
+            style="width: 300px"
+            class="center fragment"
+            src="assets/formkurven.png"
+            alt="Skjermbilde fra NRKs formkurve"
+          />
+        </section>
+        <section class="center">
+          <h2>Under VM: ?</h2>
+        </section>
+        <section class="center">
+          <img
+            src="assets/matchoppsett.png"
+            alt="Et skjermbilde fra FIFAs offisielle dokumentasjon for VM i Fotball, spesifikt seksjonen om kampoppsett i utlsagsrundene."
+          />
+        </section>
+        <section class="standard">
+          <h2>Under VM</h2>
+          <p>Hvordan skal <em>noen</em> klare å forholde seg til dette?</p>
+          <p class="fragment">
+            Plutselig er antall poeng på 3. plass en relevant faktor. Og du må se på alle
+            tredjeplassene, ikke bare din egen gruppe.
+          </p>
+          <p class="fragment">Har vi i det hele tatt sjans?</p>
+        </section>
+        <section class="center">
+          <h2>Under VM: «Har vi sjans?»</h2>
+        </section>
+        <section class="center">
+          <blockquote>Kan vi ikke bare regne på det?</blockquote>
+          <p>&ndash; Stian</p>
+        </section>
+        <section class="center">
+          <img src="assets/vg-sjans.png" alt="Skjermdump av VG-artikkel om norges sjanser." />
+        </section>
+        <section class="center">
+          <img
+            src="assets/fronten-valget.png"
+            alt="Skjermdump av NRK.no forsiden under valgkvelden 2025."
+          />
+        </section>
+        <section class="standard">
+          <h2>Regne på det?</h2>
+          <p>
+            Hvis vi kan modellere en fotballkamp statistisk, kan vi si noe om sannsynligheten for et
+            gitt utfall.
+          </p>
+          <p class="fragment">Hvilke modeller finnes for fotballkamper?</p>
+        </section>
+        <section class="center">
+          <img
+            src="assets/science.JPG"
+            alt="Bilde av en stabel med forskningsartikler om hvordan du kan predikere utfall av fotballkamper."
+          />
+        </section>
+        <section class="standard">
+          <h2>Science</h2>
+          <p>Det finnes overraskende mye vitenskap på statistisk modellering av fotballkamper.</p>
+          <p class="fragment small">Mulig det har noe med betting å gjøre.</p>
+        </section>
+        <section class="standard">
+          <h2>Science</h2>
+          <p>Forskningen spriker i flere ulike retninger.</p>
+          <p class="fragment">Er målet med modellen presisjon eller formidling?</p>
+        </section>
+        <section class="standard">
+          <h2>Norsk Regnesentral</h2>
+          <p>Profesjonelle tallknusere.</p>
+          <p class="fragment">Kilden til VGs tall.</p>
+          <p class="fragment">Har publisert prognoser for tidligere mesterskap.</p>
+        </section>
+        <section class="center">
+          <p>
+            <a href="https://em.nr.no/method/">em.nr.no/method</a>
+          </p>
+          <img src="assets/nr.png" alt="Skjermbilde av em.nr.no/method" />
+        </section>
+        <section class="standard">
+          <h2>Norsk Regnesentral</h2>
+          <p>
+            Metoden bruker en enkel statistisk modell for antall mål ett lag scorer mot ett annet
+            lag.
+          </p>
+          <p class="fragment">En Poisson-fordelt stokastisk variabel.</p>
+        </section>
+        <section class="standard">
+          <h2>Poisson-fordeling</h2>
+          <p>En sannsynlighetsfordeling for diskrete hendelser i ett gitt tidsintervall...</p>
+          <p class="fragment">
+            hvor gjennomsnittet er en kjent konstant og hendelsene inntreffer uavhengig av tid.
+          </p>
+        </section>
+        <section class="demo" id="poisson">
+          <canvas-slide data-demo="poisson"></canvas-slide>
+        </section>
+        <section class="standard">
+          <h2>Stokastisk variabel</h2>
+          <p>Representerer sannsynlighetsfordelingen til et utfall.</p>
+          <p class="fragment">
+            Du kan kombinere flere variabler for å representere et sammensatt utfall.
+          </p>
+        </section>
+        <section class="standard">
+          <h2>Stokastisk variabel</h2>
+          <p>Kan reifiseres ved å gjøre et trekk fra fordelingen.</p>
+          <p class="fragment">En simulering om du vil.</p>
+        </section>
+        <section class="standard">
+          <h2>Stokastiske variabler</h2>
+          <p>
+            Hvis vi har en variabel for antall mål lag A scorer mot lag B, og en annen variabel for
+            antall mål lag B scorer mot lag A.
+          </p>
+          <p class="fragment">
+            Er utfallet av en kamp gitt av to trekk; ett fra hver variabel / fordeling.
+          </p>
+        </section>
+        <section class="demo" id="kamp">
+          <canvas-slide data-demo="kamp"></canvas-slide>
+        </section>
+        <section class="standard">
+          <h2>Stokastiske variabler</h2>
+          <p>Dette kan enkelt utvides til å finne et utfall for mange kamper.</p>
+          <p class="fragment">
+            Plutselig har vi muligheten til å simulere et komplett gruppespill, eller en hel
+            turnering.
+          </p>
+        </section>
+        <section class="demo" id="gruppespill">
+          <canvas-slide data-demo="gruppespill"></canvas-slide>
+        </section>
+        <section class="standard">
+          <h2>Hvor sannsynlig er et utfall?</h2>
+          <p>
+            Ulempen med enkle trekk er at vi ikke vet noe om hvor sannsynlig det bestemte trekket
+            var.
+          </p>
+          <p class="fragment">
+            Og enda mer komplisert; hvor sannsynlig kombinasjonen av trekk var.
+          </p>
+        </section>
+        <section class="standard">
+          <h2>Hvor sannsynlig er et utfall?</h2>
+          <p>Løsningen er å kjøre simuleringen mange ganger.</p>
+          <p class="fragment">Over tid vil da de mest sannsynlige utfallene opptre flere ganger.</p>
+        </section>
+        <section class="demo" id="utfall">
+          <canvas-slide data-demo="utfall"></canvas-slide>
+        </section>
+        <section class="standard">
+          <h2>Parametre</h2>
+          <p>Vi har hoppet litt bukk over parameterne til sannsynlighetsfordelingen.</p>
+          <p class="fragment">
+            Hver fordeling har ett parameter (lambda) som bestemmer formen på fordelingen.
+          </p>
+          <img
+            width="250px"
+            class="fragment"
+            src="assets/poisson.svg"
+            alt="Den matematiske formelen for en Poisson-fordeling"
+          />
+        </section>
+        <section class="standard">
+          <h2>Parametre</h2>
+          <p>
+            Lambda-parameteret er gitt av forholdet mellom de to lagene som møtes og en konstant som
+            sier noe om hvor mange mål som er vanlig i denne typen kamp.
+          </p>
+          <p class="fragment">
+            <code>l_a_vs_b = gj_antall_mål * (styrke_A / styrke_B)</code>
+          </p>
+        </section>
+        <section class="standard">
+          <h2>Parametre</h2>
+          <p>Gjennomsnittlig antall mål er ganske enkelt å fastsette.</p>
+          <p class="fragment">Sjekk de siste 4-5 VMene og tell antall mål per kamp.</p>
+          <p class="fragment">
+            Viser seg at det scores ca <code>2.5</code> mål per kamp, som blir ca
+            <code>1.25</code> per lag.
+          </p>
+        </section>
+        <section class="standard">
+          <h2>Parametre</h2>
+          <p>Styrketallene for hvert lag kan løses på veldig mange måter.</p>
+          <p class="fragment">
+            De kan baseres på eksisterende ranking-systemer (FIFA, ELO), de kan læres fra gamle
+            kamper eller turneringer, eller de kan være satt av eksperter.
+          </p>
+        </section>
+        <section class="demo" id="styrketall">
+          <canvas-slide data-demo="styrketall"></canvas-slide>
+        </section>
+        <section class="standard">
+          <h2>Parametre</h2>
+          <p>Løsningen for oss ble å overlate jobben til våre eksperter.</p>
+          <p class="fragment">
+            Tre eksperter gjorde samme øvelse, og resultatet ble snittet mellom dem.
+          </p>
+          <p class="fragment">Det er disse valgene som differensierer modellen.</p>
+        </section>
+        <section class="center">
+          <img width="600px" src="assets/poisson.svg" alt="" />
+        </section>
+        <section class="standard">
+          <h2>Oppsummert</h2>
+          <p>
+            Vi har en statistisk modell for utfallet i en kamp mellom to vilkårlige lag, styrt av
+            parametre som er en miks av redaksjonelle meninger (styrketall) og observert fakta
+            (gj.snitt antall mål).
+          </p>
+          <p class="fragment">
+            Når vi setter kamp-modellen inn i turneringsstrukturen for VM i fotball kan vi si mange
+            interessante greier om forskjellige scenarier.
+          </p>
+        </section>
+        <section class="center">
+          <h2>Har vi sjans?</h2>
+        </section>
+        <section class="gallery">
+          <img src="assets/før-irak.png" alt="" />
+          <img class="fragment" src="assets/før-senegal.png" alt="" />
+          <img class="fragment" src="assets/før-frankrike.png" alt="" />
+        </section>
+        <section class="standard">
+          <h2>Lærende modell?</h2>
+          <p>
+            Desto flere kamper som får et fastsatt resultat, desto færre kamper trenger vi å
+            simulere.
+          </p>
+          <p class="fragment">
+            Dette gjør at usikkerheten i turneringsmodellen blir mindre og mindre etterhvert som
+            turneringen skrider frem.
+          </p>
+        </section>
+        <section class="gallery">
+          <img src="assets/før-start.png" alt="" />
+          <img class="fragment" src="assets/før-england.png" alt="" />
+        </section>
+        <section class="gallery">
+          <img src="assets/vs-irak.png" alt="" />
+          <img class="fragment" src="assets/vs-senegal.png" alt="" />
+          <img class="fragment" src="assets/vs-frankrike.png" alt="" />
+        </section>
+        <section class="standard">
+          <h2>Enkel modell</h2>
+          <p>Parameterne er statiske.</p>
+          <p class="fragment">
+            De hadde ikke behøvd å være det, men det var det vi gikk for denne gangen.
+          </p>
+        </section>
+        <section class="standard">
+          <h2>Enkel modell</h2>
+          <p>Det er veldig mange aspekter ved en fotballkamp denne modellen ikke fanger opp.</p>
+          <ul>
+            <li class="fragment">Forskjell i styrke mellom angrep og forsvar.</li>
+            <li class="fragment">Hjemmebanefordel.</li>
+            <li class="fragment">Endret spillemåte.</li>
+            <li class="fragment">Skader/suspensjoner på nøkkelspillere.</li>
+            <li class="fragment">Endring i motivasjon.</li>
+            <li class="fragment">Forskjell i hviletid.</li>
+            <li class="fragment">Mentalt overtak.</li>
+            <li class="fragment">Akklimatisering.</li>
+            <li class="fragment">... og mange fler.</li>
+          </ul>
+        </section>
+        <section class="standard">
+          <h2>Enkel modell</h2>
+          <p>
+            Til tross for hvor enkel denne modellen er, gir den god informasjon om hvilke ting som
+            kan inntreffe.
+          </p>
+          <p class="fragment">F.eks. hvem vi kan møte i de ulike stadiene?</p>
+        </section>
+        <section class="gallery">
+          <img src="assets/sekstendelsfinale.png" alt="" />
+        </section>
+        <section class="standard">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">I forkant av kamp</th>
+                <th scope="col">RO32</th>
+                <th scope="col">RO16</th>
+                <th scope="col">RO8</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Norge - Irak</th>
+                <td>Elfenbenskysten&nbsp;(21.54%), Tyskland&nbsp;(13.07%), Ecuador&nbsp;(8.37%)</td>
+                <td>Brasil&nbsp;(12.68%), Tyskland&nbsp;(10.07%), Marocco&nbsp;(10.07%)</td>
+                <td>Mexico&nbsp;(9.28%), England&nbsp;(9.12%), Sør&#8209;Korea&nbsp;(7.31%)</td>
+              </tr>
+              <tr>
+                <th scope="row">Norge - Senegal</th>
+                <td>Elfenbenskysten&nbsp;(39.66%), Sverige&nbsp;(15.26%), Curaçao&nbsp;(7.04%)</td>
+                <td>Brasil&nbsp;(18.51%), Tyskland&nbsp;(15.73%), Nederland&nbsp;(12.44%)</td>
+                <td>England&nbsp;(15.11%), Mexico&nbsp;(13.48%), Marocco&nbsp;(6.13%)</td>
+              </tr>
+              <tr>
+                <th scope="row">Norge - Frankrike</th>
+                <td>Elfenbenskysten&nbsp;(72.77%), Sverige&nbsp;(26.94%), Paraguay&nbsp;(0.25%)</td>
+                <td>Brasil&nbsp;(41.20%), Japan&nbsp;(31.83%), Tyskland&nbsp;(16.45%)</td>
+                <td>Mexico&nbsp;(18.75%), England&nbsp;(18.61%), Ecuador&nbsp;(15.29%)</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+        <section class="standard">
+          <h2>Overflod av data</h2>
+          <p>
+            Vi var ikke helt forbredt på akkurat hvor mye data vi kunne hente fra
+            turneringsmodellen.
+          </p>
+          <p class="fragment">Så fokuset ble på det som handlet om Norges vei gjennom VM.</p>
+        </section>
+        <section class="standard">
+          <h2>Overflod av data</h2>
+          <p>Likevel var det mye entusiasme i redaksjonen for å ha en modell som dette.</p>
+          <p class="fragment">Og det ble flittig brukt i alle flater under VM.</p>
+        </section>
+        <section class="center">
+          <img src="assets/tv.png" alt="" />
+        </section>
+        <section class="standard">
+          <h2>Veien videre?</h2>
+          <p>Modellen er ikke lagt i en skuff, bare fordi VM er over.</p>
+          <p class="fragment">Vi har laget sjanser for kvartfinale i nasjonsligaen.</p>
+        </section>
+        <section class="center">
+          <img src="assets/nasjonsligaen.png" alt="" />
+        </section>
+        <section class="standard">
+          <h2>Veien videre?</h2>
+          <p>Vi kommer til å bruke modellen på EM kvaliken som starter opp i mars neste år.</p>
+          <p class="fragment">Og forhåpentligvis VM for kvinner neste sommer.</p>
+          <p class="fragment">Alt med et mål om å gjøre det enda bedre i EM '28!</p>
+        </section>
+        <section class="center">
+          <img src="assets/credits.png" alt="" />
+        </section>
+        <section class="center">
+          <h2>Fin.</h2>
+          <div>
+            <p>Takk for meg!</p>
+            <br />
+            <p class="small">Stian Veum Møllersen / @mollerse</p>
+            <p class="small">
+              slides:
+              <a href="https://github.com/mollerse/predicting-world-cup-presentation">
+                github/mollerse/predicting-world-cup-presentation
+              </a>
+            </p>
+          </div>
+        </section>
+      </div>
+    </div>
+    <script type="module" src="index.js" charset="utf-8"></script>
+  </body>
+</html>
